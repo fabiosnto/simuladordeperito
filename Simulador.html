@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simulador Inteligente de Perito™</title>
+  <style>
+    body {
+      background-color: #000000;
+      font-family: 'Segoe UI', sans-serif;
+      color: #FFD700;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    label, input {
+      display: block;
+      width: 100%;
+      margin-bottom: 15px;
+    }
+    input {
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      background-color: #1c1c1c;
+      color: #FFD700;
+      font-size: 16px;
+    }
+    button {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      background-color: #FFD700;
+      color: #000;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .resultado {
+      margin-top: 30px;
+    }
+    .bloco {
+      background-color: #1a1a1a;
+      border: 2px solid #FFD700;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+    .bloco h2 {
+      margin-top: 0;
+      color: #FFD700;
+    }
+    .item {
+      margin: 5px 0;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Simulador Inteligente de Perito™</h1>
+
+    <label for="inicial">Investimento Inicial (Ex: R$ 250,00)</label>
+    <input type="number" step="0.01" id="inicial" placeholder="Ex: 500000.00">
+
+    <label for="mensal">Investimento Mensal (Ex: R$ 250,00)</label>
+    <input type="number" step="0.01" id="mensal" placeholder="Ex: 5000.00">
+
+    <label for="anos">Anos Investindo (Ex: 10)</label>
+    <input type="number" step="0.1" id="anos" placeholder="Ex: 5">
+
+    <button onclick="calcular()">CALCULAR 🧮</button>
+
+    <div class="resultado" id="resultado"></div>
+  </div>
+
+  <script>
+    function calcular() {
+      const inicial = parseFloat(document.getElementById('inicial').value);
+      const mensal = parseFloat(document.getElementById('mensal').value);
+      const anos = parseFloat(document.getElementById('anos').value);
+      const meses = anos * 12;
+
+      if (!inicial || !mensal || !anos) {
+        alert("Preencha todos os campos corretamente.");
+        return;
+      }
+
+      const taxaPoupanca = 0.005;
+      const taxaInvest = 0.01;
+
+      let totalAporte = inicial + mensal * meses;
+
+      let patrimonioPoup = inicial * Math.pow(1 + taxaPoupanca, meses);
+      for (let i = 1; i <= meses; i++) {
+        patrimonioPoup += mensal * Math.pow(1 + taxaPoupanca, meses - i);
+      }
+      let lucroPoup = patrimonioPoup - totalAporte;
+      let rendaPoup = patrimonioPoup * 0.007;
+
+      let patrimonioInvest = inicial * Math.pow(1 + taxaInvest, meses);
+      for (let i = 1; i <= meses; i++) {
+        patrimonioInvest += mensal * Math.pow(1 + taxaInvest, meses - i);
+      }
+      let lucroInvest = patrimonioInvest - totalAporte;
+      let rendaInvest = patrimonioInvest * 0.015;
+
+      document.getElementById('resultado').innerHTML = `
+        <div class="bloco">
+          <h2>Poupança</h2>
+          <div class="item">Total dos aportes: <strong>R$ ${totalAporte.toLocaleString()}</strong></div>
+          <div class="item">Lucro total: <strong>R$ ${lucroPoup.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</strong></div>
+          <div class="item">Patrimônio total: <strong>R$ ${patrimonioPoup.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</strong></div>
+          <div class="item">Renda passiva mensal: <strong>R$ ${rendaPoup.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</strong></div>
+        </div>
+
+        <div class="bloco">
+          <h2>Fórmula de Perito</h2>
+          <div class="item">Total dos aportes: <strong>R$ ${totalAporte.toLocaleString()}</strong></div>
+          <div class="item">Lucro total: <strong>R$ ${lucroInvest.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</strong></div>
+          <div class="item">Patrimônio total: <strong>R$ ${patrimonioInvest.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</strong></div>
+          <div class="item">Renda passiva mensal: <strong>R$ ${rendaInvest.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</strong></div>
+        </div>
+      `;
+    }
+  </script>
+</body>
+</html>
